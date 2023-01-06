@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { getMessages } from "../../Api/MessageRequest";
@@ -12,7 +13,7 @@ const ChatBox = ({ chat, currentUser }) => {
   const [newMessage, setNewMessage] = useState("");
 
   // fetching data for header
-  useEffect(() => { 
+  useEffect(() => {
     const userId = chat.members.find((id) => id !== currentUser);
     const getUserData = async () => {
       try {
@@ -38,10 +39,9 @@ const ChatBox = ({ chat, currentUser }) => {
     if (chat !== null) fetchMessages();
   }, [chat]);
 
-  const handleChange =(newMessage)=>{
-    setNewMessage(newMessage)
-  }
-
+  const handleChange = (newMessage) => {
+    setNewMessage(newMessage);
+  };
 
   return (
     <>
@@ -89,10 +89,7 @@ const ChatBox = ({ chat, currentUser }) => {
           {/* chat-sender */}
           <div className="chat-sender">
             <div>+</div>
-            <InputEmoji 
-            value={newMessage}
-            onChange={handleChange}
-            />
+            <InputEmoji value={newMessage} onChange={handleChange} />
           </div>
         </>
       </div>
