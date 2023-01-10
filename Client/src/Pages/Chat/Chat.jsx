@@ -12,11 +12,42 @@ import Conversation from "../../Components/Conversation/Conversation";
 import LogoSearch from "../../Components/LogoSearch/LogoSearch";
 import "./Chat.css";
 import ChatBox from "../../Components/ChatBox/ChatBox";
+import { io } from "socket.io-client";
+import { useRef } from "react";
 
 const Chat = () => {
   const { user } = useSelector((state) => state.authReducer.authData);
+
   const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [sendMessage, setSendMessage] = useState(null);
+  const [receiveMessage, setReceiveMessage] = useState(null);
+  const socket = useRef();
+
+  //send message to socket server
+  useEffect(() => {
+    if (sendMessage !== null) {
+      socket.current.emit("send-message", sendMessage);
+    }
+  }, [sendMessage]);
+
+  useEffect(() => {
+    socket.current = io("http://localhost:8800");
+    socket.current.emit("new-user-add", user._id);
+    socket.current.on("get-users", (users) => {
+      setOnlineUsers(users);
+    });
+  }, [user]);
+
+  // receive message from the socket server
+  useEffect(() => {
+    socket.current.on("receive-message", (data) => {
+      console.log("data received in parent Chat.jsx:", data);
+      setReceiveMessage(data);
+    });
+  }, []);
+
   useEffect(() => {
     const getChats = async () => {
       try {
@@ -28,6 +59,12 @@ const Chat = () => {
     };
     getChats();
   }, [user]);
+
+  const checkOnlineStatus = (chat) => {
+    const chatMember = chat.members.find((member) => member !== user._id);
+    const online = onlineUsers.find((user) => user.userId === chatMember);
+    return online ? true : false;
+  };
   return (
     <div className="Chat">
       {/* Left Side */}
@@ -38,7 +75,11 @@ const Chat = () => {
           <div className="Chat-list">
             {chats.map((chat) => (
               <div onClick={() => setCurrentChat(chat)}>
-                <Conversation data={chat} currentUserId={user._id} />
+                <Conversation
+                  data={chat}
+                  currentUserId={user._id}
+                  online={checkOnlineStatus(chat)}
+                />
               </div>
             ))}
           </div>
@@ -59,14 +100,20 @@ const Chat = () => {
             </Link>
           </div>
         </div>
-        <div className="Chat-container">
-
-        {/* chat body */}
-        {currentChat ? (
-          <ChatBox chat={currentChat} currentUser={user._id} />
-        ) : (
-          "Select a Chat"
-        )}
+        <div>
+          {/* chat body */}
+          {currentChat ? (
+            <ChatBox
+              chat={currentChat}
+              currentUser={user._id}
+              setSendMessage={setSendMessage}
+              receiveMessage={receiveMessage}
+            />
+          ) : (
+            <span className="chatbox-empty-message">
+              Select a Chat head to view ...
+            </span>
+          )}
         </div>
       </div>
     </div>

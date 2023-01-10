@@ -59,6 +59,7 @@
   
   
   .chatbox-empty-message {
+    margin-top: 50px;
     display: flex;
     align-self: center;
     justify-content: center;
