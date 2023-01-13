@@ -66,7 +66,7 @@ const PostShare = () => {
             <UilScenery />
             Photo
           </div>
-          <div className="option" style={{ color: "var(--video)" }}>
+          {/* <div className="option" style={{ color: "var(--video)" }}>
             <UilPlayCircle />
             Video
           </div>
@@ -77,7 +77,7 @@ const PostShare = () => {
           <div className="option" style={{ color: "var(--shedule)" }}>
             <UilSchedule />
             Schedule
-          </div>
+          </div> */}
           <button
             className="button ps-button"
             onClick={handleSubmit}

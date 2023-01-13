@@ -1,31 +1,49 @@
 // eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import Cover from "../../img/cover.jpg";
 import Profile from "../../img/profileImg.jpg";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "./ProfileCard.css";
+import { useState } from "react";
+import { getUser } from "../../Api/UserRequest";
 
 const ProfileCard = ({ location }) => {
+  const params = useParams();
   const { user } = useSelector((state) => state.authReducer.authData);
   const posts = useSelector((state) => state.postReducer.posts);
   const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
+  const [profile ,setProfile] = useState(null)
 
+  
+  useEffect(()=>{
+    
+    if(params.id !== user._id){
+      getUser(params.id).then((response)=>{
+        setProfile(response.data)
+      })
+    }
+  },[params])
+
+  useEffect(()=>{
+    setProfile(user)
+  },[])
+  
   return (
     <div className="ProfileCard">
       <div className="ProfileImages">
         <img
           src={
-            user.coverPicture
-              ? serverPublic + user.coverPicture
+            profile?.coverPicture
+              ? serverPublic + profile?.coverPicture
               : serverPublic + "defaultCover.jpeg"
           }
           alt=""
         />
         <img
           src={
-            user.profilePicture
-              ? serverPublic + user.profilePicture
+            profile?.profilePicture
+              ? serverPublic + profile?.profilePicture
               : serverPublic + "defaultProfile.png"
           }
           alt=""
@@ -33,22 +51,22 @@ const ProfileCard = ({ location }) => {
       </div>
       <div className="ProfileName">
         <span>
-          {user.firstname} {user.lastname}
+          {profile?.firstname} {profile?.lastname}
         </span>
-        <span>{user.worksAt ? user.worksAt : "Write about yourself"}</span>
+        <span>{profile?.worksAt ? profile?.worksAt : "Write about yourself"}</span>
       </div>
       <div className="followStatus">
         <hr />
         <div>
           <div className="follow">
-            <span>{user.following.length}</span>
+            <span>{profile?.following.length}</span>
             <span>Following</span>
           </div>
 
           <div className="vl"></div>
 
           <div className="follow">
-            <span>{user.followers.length}</span>
+            <span>{profile?.followers.length}</span>
             <span>Followers</span>
           </div>
           {location === "profilePage" && (
@@ -56,7 +74,7 @@ const ProfileCard = ({ location }) => {
               <div className="vl"></div>
               <div className="follow">
                 <span>
-                  {posts.filter((post) => post.userId === user._id).length}
+                  {posts.filter((post) => post.userId === profile?._id).length}
                 </span>
                 <span>Posts</span>
               </div>

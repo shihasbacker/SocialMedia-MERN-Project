@@ -5,12 +5,12 @@ const commentSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: "users",
     },
     postId: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: "Post",
+      ref: "posts",
     },
     comment: String,
     likes: [],

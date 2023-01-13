@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { createComment, getComments } from "../../Api/CommentRequest";
 import "./Comment.css";
 
 const Comment = ({ data }) => {
+  const { user } = useSelector((state) => state.authReducer.authData);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
 
@@ -27,6 +29,13 @@ const Comment = ({ data }) => {
     e.preventDefault();
     try {
       const response = await createComment(data._id, comment);
+      console.log(response,'kakkattil house');
+      const newObj = {
+        _id : user._id,
+        firstname : user.firstname,
+        lastname : user.lastname
+      }
+      response.data.userId = newObj
       setComments((pre) => {
         return [...pre, response.data];
       });

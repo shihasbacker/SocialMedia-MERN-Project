@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import Auth from "./Pages/Auth/Auth";
 import Home from "./Pages/Home/Home";
@@ -10,6 +10,11 @@ import Chat from "./Pages/Chat/Chat";
 
 function App() {
   const user = useSelector((state) => state.authReducer.authData);
+
+  useEffect(()=>{
+    document.title = "Social Space";
+  }, [])
+
   return (
     <div className="App">
       <div className="blur" style={{ top: "-18%", right: "0" }}></div>

@@ -8,11 +8,24 @@ import NotLike from "../../img/notlike.png";
 import { useSelector } from "react-redux";
 import { likePost } from "../../Api/PostRequest";
 import Comment from "../Comment/Comment";
+import { useEffect } from "react";
+import { getUser } from "../../Api/UserRequest";
 
 const Post = ({ data }) => {
+  console.log(data, "data")
   const { user } = useSelector((state) => state.authReducer.authData);
   const [liked, setLiked] = useState(data.likes.includes(user._id));
   const [likes, setLikes] = useState(data.likes.length);
+  const [username, setUsername] = useState(null);
+  useEffect(()=>{
+    const fetchUser = async()=>{
+      const username = await getUser(data.userId)
+      setUsername(username.data.firstname + " " + username.data.lastname)
+    } 
+    fetchUser();
+  },[])
+
+  console.log(username, "username")
   const handleLike = () => {
     setLiked((prev) => !prev);
     likePost(data._id, user._id);
@@ -21,12 +34,13 @@ const Post = ({ data }) => {
   const [show, setShow] = useState(false);
   return (
     <div className="Post">
+      <div><b>{username}</b></div>
       <img
         src={data.image ? process.env.REACT_APP_PUBLIC_FOLDER + data.image : ""}
         alt=""
       />
 
-      <div className="postReact">
+      <div className="postReact" style={{"margin-left":"20px"}}>
         <img
           src={liked ? Heart : NotLike}
           alt=""
@@ -34,10 +48,10 @@ const Post = ({ data }) => {
           onClick={handleLike}
         />
         <img src={Comments} alt="" onClick={() => setShow((show) => !show)} />
-        <img src={Share} alt="" />
+        {/* <img src={Share} alt="" /> */}
       </div>
 
-      <span style={{ color: "var(--gray)", fontSize: "13px" }}>
+      <span style={{ color: "var(--gray)", fontSize: "13px", "margin-left":"20px" }}>
         {likes} likes
       </span>
       <div className="detail">

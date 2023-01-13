@@ -10,6 +10,9 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-export const createComment = (postId, comment) =>
-  API.post(`/comment/${postId}`, { comment });
+export const createComment = (postId, comment) =>{
+  console.log("hi")
+  console.log(postId, comment);
+ return API.post(`/comment/${postId}`, { comment });
+}
 export const getComments = (postId) => API.get(`/comment/${postId}`);
