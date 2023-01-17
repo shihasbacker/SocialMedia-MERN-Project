@@ -94,9 +94,6 @@ const InfoCard = () => {
       }}>
           Message
         </span>
-        // <span className="button chat-button" onClick={handleLogOut}>
-        //   Message
-        // </span>
       )}
     </div>
   );

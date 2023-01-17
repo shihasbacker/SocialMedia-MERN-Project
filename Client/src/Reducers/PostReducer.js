@@ -17,6 +17,11 @@ const postReducer = (
     return { ...state, posts: action.data, loading: false, error: false };
   case "RETREIVING_FAIL":
     return { ...state, loading: false, error: true };
+  
+    case "POST_DELETE":
+      console.log(action.actionData,"actiondata")
+      return { ...state, posts: action.actionData, uploading: false, error: false };
+    
   default:
     return state;
   }

@@ -8,6 +8,15 @@
     gap: 1rem;
 }
 
+.Post-Info{
+    display: flex;
+    justify-content: space-between;
+}
+
+.Delete{
+    display: flex;
+}
+
 .Post>img{
     width: 100%;
     max-height: 20rem;
@@ -18,7 +27,7 @@
 .postReact{
     display: flex;
     align-items: flex-start;
-    gap: 1.5rem;
+    gap: 1.5rem; 
 }
 
 .postReact>img:hover{

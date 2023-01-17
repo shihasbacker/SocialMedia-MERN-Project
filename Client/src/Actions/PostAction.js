@@ -11,3 +11,15 @@ export const getTimelinePosts = (id) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const deletePosts = (id,data) => {
+  console.log("inside",data)
+  return (
+      async (dispatch) => {
+      console.log("this is working")
+      const datas = await PostApi.deletePost(id,data);
+      const actionData = datas.data
+      console.log(actionData,"deleted post")
+      dispatch({type:"POST_DELETE",actionData})
+  })
+}
