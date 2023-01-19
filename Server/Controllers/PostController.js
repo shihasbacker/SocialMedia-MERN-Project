@@ -88,8 +88,10 @@ export const likePost = async (req, res) => {
 export const getTimelinePosts = async (req, res) => {
   console.log("reaching here")
   const userId = req.params.id;
+  console.log(userId,'userId');
   try {
     const currentUserPosts = await PostModel.find({ userId: userId });
+    console.log(currentUserPosts,'current user');
     const followingPosts = await UserModel.aggregate([
       {
         $match: {
@@ -104,6 +106,7 @@ export const getTimelinePosts = async (req, res) => {
           as: "followingPosts",
         },
       },
+    
       {
         $project: {
           followingPosts: 1,
@@ -111,7 +114,7 @@ export const getTimelinePosts = async (req, res) => {
         },
       },
     ]);
-    console.log(followingPosts)
+    console.log(followingPosts,'following user')
     res.status(200).json(
       currentUserPosts
         .concat(...followingPosts[0].followingPosts)

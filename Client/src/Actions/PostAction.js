@@ -18,6 +18,7 @@ export const deletePosts = (id,data) => {
       async (dispatch) => {
       console.log("this is working")
       const datas = await PostApi.deletePost(id,data);
+      console.log(datas,'i am coming');
       const actionData = datas.data
       console.log(actionData,"deleted post")
       dispatch({type:"POST_DELETE",actionData})

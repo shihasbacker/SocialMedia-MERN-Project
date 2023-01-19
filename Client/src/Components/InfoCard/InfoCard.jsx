@@ -22,7 +22,8 @@ const InfoCard = () => {
     const fetchProfileUser = async () => {
       if (profileUserId === user._id) {
         setProfileUser(user);
-      } else {
+      } else  {
+        
         const profileUser = await UserApi.getUser(profileUserId);
         setProfileUser(profileUser.data);
       }

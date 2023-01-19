@@ -21,6 +21,7 @@ const Post = ({ data }) => {
   const [likes, setLikes] = useState(data?.likes?.length);
   const [username, setUsername] = useState(null);
   const [deletes, setDelete] = useState(false);
+  console.log(data,"data")
 
   const deletePost = async () => {
     console.log("user",user)
@@ -34,10 +35,11 @@ const Post = ({ data }) => {
   useEffect(() => {
     const fetchUser = async () => {
       const username = await getUser(data.userId);
+      console.log(username,'username');
       setUsername(username.data.firstname + " " + username.data.lastname);
     };
     fetchUser();
-  }, []);
+  }, [data]);
 
   const handleLike = () => {
     setLiked((prev) => !prev);

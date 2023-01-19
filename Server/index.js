@@ -10,6 +10,8 @@ import UploadRoute from "./Routes/UploadRoute.js";
 import CommentRoute from "./Routes/CommentRoute.js";
 import ChatRoute from "./Routes/ChatRoute.js";
 import MessageRoute from "./Routes/MessageRoute.js";
+import http from "http";
+import { Server } from "socket.io";
 
 const app = express();
 
@@ -32,11 +34,58 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() =>
-    app.listen(process.env.PORT, () =>
+    server.listen(process.env.PORT, () =>
       console.log(`Listening at ${process.env.PORT}`)
     )
   )
   .catch((error) => console.log(error));
+
+// socket.io
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    // origin: '',
+    origin: "http://localhost:3000",
+    methods:["GET","POST"],
+    secure: false,
+    changeOrigin: true
+  },
+});
+
+let activeUsers = [];
+
+io.on("connection", (socket) => {
+  // add new User
+  socket.on("new-user-add", (newUserId) => {
+    // if user is not added previously
+    if (!activeUsers.some((user) => user.userId === newUserId)) {
+      activeUsers.push({
+        userId: newUserId,
+        socketId: socket.id,
+      });
+    }
+    console.log("Connected Users", activeUsers);
+    io.emit("get-users", activeUsers);
+  });
+
+  // send message
+  socket.on("send-message", (data) => {
+    const { receiverId } = data;
+    const user = activeUsers.find((user) => user.userId === receiverId);
+    console.log("Sending from socket to : ", receiverId);
+    console.log("Data:", data);
+    if (user) {
+      io.to(user.socketId).emit("receive-message", data);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    activeUsers = activeUsers.filter((user) => user.socketid !== socket.id);
+    console.log("User Disconnected", activeUsers);
+    io.emit("get-users", activeUsers);
+  });
+});
 
 //using Routes
 app.use("/auth", AuthRoute);
@@ -45,4 +94,4 @@ app.use("/post", PostRoute);
 app.use("/upload", UploadRoute);
 app.use("/comment", CommentRoute);
 app.use("/chat", ChatRoute);
-app.use('/message', MessageRoute);
+app.use("/message", MessageRoute);
